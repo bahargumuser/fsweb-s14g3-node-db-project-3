@@ -31,17 +31,19 @@ const checkSchemeId = async (req, res, next) => {
     "message": "Geçersiz scheme_name"
   }
 */
-const validateScheme = (req, res, next) => {};
-try {
-  const { scheme_name } = req.body;
-  if (!scheme_name) {
-    res.status(400).json({ message: "Geçersiz scheme_name" });
-  } else {
-    next();
+const validateScheme = (req, res, next) => {
+  try {
+    const { scheme_name } = req.body;
+    if (!scheme_name) {
+      res.status(400).json({ message: "Geçersiz scheme_name" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    next(error);
   }
-} catch (error) {
-  next(error);
-}
+};
+
 /*
   Eğer `instructions` yoksa, boş string yada string değilse, ya da
   eğer `step_number` sayı değilse ya da birden küçükse:

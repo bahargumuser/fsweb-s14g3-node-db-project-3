@@ -26,9 +26,8 @@ function find() {
     .orderBy("sc.scheme_id", "asc");
 }
 
-async function findById(scheme_id) {
-  // Egzersiz B
-  /*
+// Egzersiz B
+/*
     1B- Aşağıdaki SQL sorgusunu SQLite Studio'da "data/schemes.db3" ile karşılaştırarak inceleyin:
 
       SELECT
@@ -93,34 +92,35 @@ async function findById(scheme_id) {
         "steps": []
       }
   */
+async function findById(scheme_id) {
   const schemeWithSteps = await db("schemes as sc")
     .leftJoin("steps as st", "sc.scheme_id", "st.scheme_id")
-    .select(" sc.scheme_name", "st.*")
-    .where("sc.scheme_id", "scheme_id")
+    .select("sc.scheme_name", "st.*")
+    .where("sc.scheme_id", scheme_id)
     .orderBy("st.step_number", "asc");
   if (!schemeWithSteps) {
     return null;
   }
-} //yukarıdfaki kısımda sorguları yaptık. sgllite'da bu sorgunun yukarıdaki karşılığı tablo şeklinde veriliyor. biz tablo şeklinde çıktı almak istemediğimiz için bu adımları uyguladık.
+  //yukarıdfaki kısımda sorguları yaptık. sgllite'da bu sorgunun yukarıdaki karşılığı tablo şeklinde veriliyor. biz tablo şeklinde çıktı almak istemediğimiz için bu adımları uyguladık.
 
-const responseData = {
-  scheme_id: scheme_id,
-  scheme_name: schemeWithSteps[0].scheme_name,
-  steps: [], //bu kısım obje şeması
-};
-if (schemeWithSteps[0].step_id === null) {
-  return responseData;
-} else {
-  schemeWithSteps.array.forEach((item) => {
-    responseData.steps.push({
-      step_id: item.step_id,
-      step_number: item.step_number,
-      instructions: item.instructions,
+  const responseData = {
+    scheme_id: parseInt(scheme_id),
+    scheme_name: schemeWithSteps[0].scheme_name,
+    steps: [], //bu kısım obje şeması
+  };
+  if (schemeWithSteps[0].step_id === null) {
+    return responseData;
+  } else {
+    schemeWithSteps.array.forEach((item) => {
+      responseData.steps.push({
+        step_id: item.step_id,
+        step_number: item.step_number,
+        instructions: item.instructions,
+      });
     });
-  });
-  return responseData;
-} //json formatına döndürdük.
-
+    return responseData;
+  } //json formatına döndürdük.
+}
 async function findSteps(scheme_id) {
   // Egzersiz C
   /*
